@@ -1,0 +1,28 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor Jogador
+
+rectangle "Bolonha e Milano" {
+  usecase "Iniciar novo jogo" as UC1
+  usecase "Informar nome do jogador" as UC1a
+  usecase "Informar nome da cidade" as UC1b
+  usecase "Ver status da cidade" as UC2
+  usecase "Ler sobre o jogo" as UC3
+  usecase "Sair" as UC4
+}
+
+Jogador --> UC1
+Jogador --> UC2
+Jogador --> UC3
+Jogador --> UC4
+
+UC1 ..> UC1a : <<include>>
+UC1 ..> UC1b : <<include>>
+
+note right of UC2
+  Exige jogo iniciado.
+  Caso contrario, exibe aviso.
+end note
+@enduml
