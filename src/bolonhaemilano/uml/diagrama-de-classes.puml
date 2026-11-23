@@ -1,0 +1,123 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class Main {
+  + {static} main(args : String[]) : void
+}
+
+class Menu {
+  - scanner : Scanner
+  - emExecucao : boolean
+  - jogador : Jogador
+  - cidade : Cidade
+  - mercado : Mercado
+  - agricultura : Agricultura
+  + Menu()
+  + executar() : void
+  - exibirOpcoes() : void
+  - lerOpcao() : int
+  - processarOpcao(opcao : int) : void
+  - iniciarNovoJogo() : void
+  - exibirStatusCidade() : void
+  - abrirMercado() : void
+  - lerQuantidade(unidade : String) : int
+  - resultado(sucesso : boolean, msgOk : String, msgErro : String) : void
+  - abrirAgricultura() : void
+  - colher() : void
+  - distribuirAlimentos() : void
+  - lerInteiro() : int
+  - lerNome(pergunta : String) : String
+  - exibirSobre() : void
+}
+
+class Jogador {
+  - nome : String
+  - titulo : String
+  + Jogador(nome : String)
+  + getNome() : String
+  + getTitulo() : String
+}
+
+class Cidade {
+  - nome : String
+  - anoAtual : int
+  - florins : int
+  - terras : int
+  - graos : int
+  - servos : int
+  - dono : Jogador
+  + Cidade(nome : String, dono : Jogador)
+  + avancarAno() : void
+  + adicionarFlorins(qtd : int) : void
+  + removerFlorins(qtd : int) : boolean
+  + adicionarTerras(qtd : int) : void
+  + removerTerras(qtd : int) : boolean
+  + adicionarGraos(qtd : int) : void
+  + removerGraos(qtd : int) : boolean
+  + adicionarServos(qtd : int) : void
+  + removerServos(qtd : int) : boolean
+  + getFlorins() : int
+  + getTerras() : int
+  + getGraos() : int
+  + getServos() : int
+  + exibirStatus() : void
+}
+
+class Mercado {
+  - {static} PRECO_GRAO : int
+  - {static} PRECO_VENDA_GRAO : int
+  - {static} PRECO_TERRA : int
+  - {static} PRECO_VENDA_TERRA : int
+  + comprarGraos(cidade : Cidade, qtd : int) : boolean
+  + venderGraos(cidade : Cidade, qtd : int) : boolean
+  + comprarTerras(cidade : Cidade, qtd : int) : boolean
+  + venderTerras(cidade : Cidade, qtd : int) : boolean
+  + getPrecoGrao() : int
+  + getPrecoVendaGrao() : int
+  + getPrecoTerra() : int
+  + getPrecoVendaTerra() : int
+}
+
+class Agricultura {
+  - {static} HECTARES_POR_SERVO : int
+  - {static} PRODUCAO_POR_HECTARE : int
+  - {static} HECTARES_POR_SEMENTE : int
+  - {static} SERVOS_POR_GRAO : int
+  - {static} CRESCIMENTO_PERCENTUAL : int
+  - {static} PERCENTUAL_MINIMO : int
+  - {static} PERCENTUAL_MAXIMO : int
+  + processarColheita(cidade : Cidade) : int
+  + distribuirAlimentos(cidade : Cidade, percentual : int) : boolean
+  + getPercentualMinimo() : int
+  + getPercentualMaximo() : int
+}
+
+Main ..> Menu : cria e executa
+Menu "1" o-- "0..1" Jogador : jogador
+Menu "1" o-- "0..1" Cidade : cidade
+Menu "1" *-- "1" Mercado : mercado
+Menu "1" *-- "1" Agricultura : agricultura
+Cidade "1" --> "1" Jogador : dono
+Mercado ..> Cidade : opera sobre
+Agricultura ..> Cidade : opera sobre
+
+note bottom of Mercado
+  Nao guarda nenhuma Cidade:
+  recebe a cidade por parametro.
+end note
+
+note bottom of Agricultura
+  Nao guarda nenhuma Cidade.
+  hectares = min(terras, servos x 5)
+  sementes = hectares / 2
+  producao = hectares x 2
+  percentual de distribuicao: 20 a 80
+end note
+
+note bottom of Cidade
+  Inicial: 1000 florins, 10000 hectares,
+  500 graos, 200 servos.
+  remover* devolve false se faltar saldo.
+end note
+@enduml
