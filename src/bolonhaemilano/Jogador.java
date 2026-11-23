@@ -5,7 +5,7 @@ public class Jogador {
 
     public Jogador(String nome) {
         this.nome = nome;
-        this.titulo = "Cavaleiro(a)";
+        this.titulo = "Cavaleiro";
     }
 
     public String getNome() {
