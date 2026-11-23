@@ -20,6 +20,16 @@ rectangle "Bolonha e Milano" {
   usecase "Colher" as UC6a
   usecase "Distribuir alimentos" as UC6b
   usecase "Informar percentual (20 a 80)" as UC6c
+  usecase "Acessar governo" as UC7
+  usecase "Arrecadar impostos" as UC7a
+  usecase "Definir taxa de imposto" as UC7b
+  usecase "Informar taxa (0 a 50)" as UC7c
+  usecase "Definir nivel de justica" as UC7d
+  usecase "Escolher Justa, Moderada ou Severa" as UC7e
+  usecase "Acessar construcoes" as UC8
+  usecase "Recrutar soldados" as UC8a
+  usecase "Construir edificios" as UC8b
+  usecase "Informar quantidade de soldados/construcoes" as UC8c
   usecase "Sair" as UC4
 }
 
@@ -28,6 +38,8 @@ Jogador --> UC2
 Jogador --> UC3
 Jogador --> UC5
 Jogador --> UC6
+Jogador --> UC7
+Jogador --> UC8
 Jogador --> UC4
 
 UC1 ..> UC1a : <<include>>
@@ -46,14 +58,33 @@ UC6a ..> UC6 : <<extend>>
 UC6b ..> UC6 : <<extend>>
 UC6b ..> UC6c : <<include>>
 
+UC7a ..> UC7 : <<extend>>
+UC7b ..> UC7 : <<extend>>
+UC7d ..> UC7 : <<extend>>
+UC7b ..> UC7c : <<include>>
+UC7d ..> UC7e : <<include>>
+
+UC8a ..> UC8 : <<extend>>
+UC8b ..> UC8 : <<extend>>
+UC8a ..> UC8c : <<include>>
+UC8b ..> UC8c : <<include>>
+
 note right of UC2
   Exige jogo iniciado.
-  Mostra florins, terras, graos e servos.
+  Mostra os 6 recursos, a taxa de imposto
+  e o nivel de justica.
 end note
 note right of UC5
   Exige jogo iniciado.
 end note
 note right of UC6
   Exige jogo iniciado.
+end note
+note right of UC7
+  Exige jogo iniciado.
+end note
+note right of UC8
+  Exige jogo iniciado.
+  Soldado exige florins E servos.
 end note
 @enduml

@@ -5,6 +5,8 @@ public class Menu {
     private final Scanner scanner;
     private final Mercado mercado;
     private final Agricultura agricultura;
+    private final Governo governo;
+    private final Construcoes construcoes;
     private boolean emExecucao;
     private Jogador jogador;
     private Cidade cidade;
@@ -13,6 +15,8 @@ public class Menu {
         this.scanner = new Scanner(System.in);
         this.mercado = new Mercado();
         this.agricultura = new Agricultura();
+        this.governo = new Governo();
+        this.construcoes = new Construcoes();
         this.emExecucao = true;
     }
 
@@ -36,6 +40,8 @@ public class Menu {
         System.out.println("3 - Ver status da cidade");
         System.out.println("4 - Mercado");
         System.out.println("5 - Agricultura");
+        System.out.println("6 - Governo");
+        System.out.println("7 - Construcoes");
         System.out.println("0 - Sair");
         System.out.print("Escolha uma opcao: ");
     }
@@ -60,6 +66,12 @@ public class Menu {
                 break;
             case 5:
                 abrirAgricultura();
+                break;
+            case 6:
+                abrirGoverno();
+                break;
+            case 7:
+                abrirConstrucoes();
                 break;
             case 0:
                 System.out.println("\nAte a proxima!");
@@ -181,7 +193,6 @@ public class Menu {
         }
     }
 
-    // Só delega para Agricultura e imprime o resultado
     private void colher() {
         int graosAntes = cidade.getGraos();
         int producao = agricultura.processarColheita(cidade);
@@ -194,7 +205,6 @@ public class Menu {
         }
     }
 
-    // Só delega para Agricultura e imprime o resultado
     private void distribuirAlimentos() {
         System.out.print("Percentual de graos a distribuir ("
                 + agricultura.getPercentualMinimo() + " a "
@@ -222,6 +232,151 @@ public class Menu {
         } else {
             System.out.println("A populacao permaneceu estavel.");
         }
+    }
+
+    // ---------- Governo ----------
+
+    private void abrirGoverno() {
+        if (cidade == null) {
+            System.out.println("\nNenhum jogo iniciado. Escolha \"Novo jogo\" primeiro.");
+            return;
+        }
+
+        boolean noGoverno = true;
+        while (noGoverno) {
+            System.out.println();
+            System.out.println("--- GOVERNO ---");
+            System.out.println("Florins: " + cidade.getFlorins()
+                    + " | Servos: " + cidade.getServos()
+                    + " | Taxa: " + cidade.getTaxaImposto() + "%"
+                    + " | Justica: " + cidade.getNivelJustica());
+            System.out.println("1 - Arrecadar impostos");
+            System.out.println("2 - Definir taxa de imposto");
+            System.out.println("3 - Definir nivel de justica");
+            System.out.println("0 - Voltar");
+            System.out.print("Escolha uma opcao: ");
+
+            int opcao = lerInteiro();
+            switch (opcao) {
+                case 1:
+                    arrecadarImpostos();
+                    break;
+                case 2:
+                    definirTaxaImposto();
+                    break;
+                case 3:
+                    definirJustica();
+                    break;
+                case 0:
+                    noGoverno = false;
+                    break;
+                default:
+                    System.out.println("\nOpcao invalida. Tente novamente.");
+            }
+        }
+    }
+
+    private void arrecadarImpostos() {
+        int arrecadado = governo.arrecadarImpostos(cidade);
+        System.out.println("\nImpostos arrecadados: " + arrecadado + " florins.");
+    }
+
+    private void definirTaxaImposto() {
+        System.out.print("Nova taxa de imposto ("
+                + governo.getTaxaMinima() + " a " + governo.getTaxaMaxima() + "%): ");
+        int taxa = lerInteiro();
+        if (governo.definirTaxaImposto(cidade, taxa)) {
+            System.out.println("\nTaxa de imposto definida para " + taxa + "%.");
+        } else {
+            System.out.println("\nTaxa invalida. Use um valor entre "
+                    + governo.getTaxaMinima() + " e " + governo.getTaxaMaxima() + ".");
+        }
+    }
+
+    private void definirJustica() {
+        System.out.println("1 - " + Governo.JUSTA);
+        System.out.println("2 - " + Governo.MODERADA);
+        System.out.println("3 - " + Governo.SEVERA);
+        System.out.print("Escolha o nivel de justica: ");
+        int escolha = lerInteiro();
+
+        String nivel;
+        switch (escolha) {
+            case 1:
+                nivel = Governo.JUSTA;
+                break;
+            case 2:
+                nivel = Governo.MODERADA;
+                break;
+            case 3:
+                nivel = Governo.SEVERA;
+                break;
+            default:
+                nivel = "";
+        }
+
+        if (governo.definirJustica(cidade, nivel)) {
+            System.out.println("\nNivel de justica definido para " + nivel + ".");
+        } else {
+            System.out.println("\nNivel de justica invalido.");
+        }
+    }
+
+    // ---------- Construcoes ----------
+
+    private void abrirConstrucoes() {
+        if (cidade == null) {
+            System.out.println("\nNenhum jogo iniciado. Escolha \"Novo jogo\" primeiro.");
+            return;
+        }
+
+        boolean emConstrucoes = true;
+        while (emConstrucoes) {
+            System.out.println();
+            System.out.println("--- CONSTRUCOES ---");
+            System.out.println("Florins: " + cidade.getFlorins()
+                    + " | Servos: " + cidade.getServos()
+                    + " | Soldados: " + cidade.getSoldados()
+                    + " | Construcoes: " + cidade.getConstrucoes());
+            System.out.println("1 - Recrutar soldados ("
+                    + construcoes.getPrecoSoldado() + " florins + "
+                    + construcoes.getServosPorSoldado() + " servo cada)");
+            System.out.println("2 - Construir edificios ("
+                    + construcoes.getPrecoConstrucao() + " florins cada)");
+            System.out.println("0 - Voltar");
+            System.out.print("Escolha uma opcao: ");
+
+            int opcao = lerInteiro();
+            switch (opcao) {
+                case 1:
+                    recrutarSoldados();
+                    break;
+                case 2:
+                    construir();
+                    break;
+                case 0:
+                    emConstrucoes = false;
+                    break;
+                default:
+                    System.out.println("\nOpcao invalida. Tente novamente.");
+            }
+        }
+    }
+
+    // Só delega para Construcoes e imprime o resultado
+    private void recrutarSoldados() {
+        int quantidade = lerQuantidade("soldados");
+        resultado(construcoes.recrutarSoldados(cidade, quantidade),
+                "Recrutamento realizado: " + quantidade + " soldados.",
+                "Florins ou servos insuficientes, ou quantidade invalida.");
+    }
+
+    // Só delega para Construcoes e imprime o resultado
+    private void construir() {
+        int quantidade = lerQuantidade("construcoes");
+        resultado(construcoes.construir(cidade, quantidade),
+                "Construcao realizada: " + quantidade + " edificio(s).",
+                "Florins insuficientes ou quantidade invalida.");
     }
 
     // ---------- Leitura de entrada ----------
@@ -257,7 +412,8 @@ public class Menu {
         System.out.println("--- SOBRE O JOGO ---");
         System.out.println("Bolonha e Milano e um jogo de estrategia economica");
         System.out.println("ambientado na Italia medieval. Voce comanda uma cidade,");
-        System.out.println("administra florins, terras, graos e servos, e constroi");
-        System.out.println("sua fortuna.");
+        System.out.println("administra florins, terras, graos e servos, cobra");
+        System.out.println("impostos, recruta soldados, ergue edificios e");
+        System.out.println("constroi sua fortuna.");
     }
 }

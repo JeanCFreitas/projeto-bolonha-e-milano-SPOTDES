@@ -4,6 +4,10 @@ public class Cidade {
     private static final int TERRAS_INICIAIS = 10000;
     private static final int GRAOS_INICIAIS = 500;
     private static final int SERVOS_INICIAIS = 200;
+    private static final int SOLDADOS_INICIAIS = 0;
+    private static final int CONSTRUCOES_INICIAIS = 0;
+    private static final int TAXA_IMPOSTO_INICIAL = 10;
+    private static final String NIVEL_JUSTICA_INICIAL = "Moderada";
 
     private final String nome;
     private final Jogador dono;
@@ -12,6 +16,10 @@ public class Cidade {
     private int terras;
     private int graos;
     private int servos;
+    private int soldados;
+    private int construcoes;
+    private int taxaImposto;
+    private String nivelJustica;
 
     public Cidade(String nome, Jogador dono) {
         this.nome = nome;
@@ -21,6 +29,10 @@ public class Cidade {
         this.terras = TERRAS_INICIAIS;
         this.graos = GRAOS_INICIAIS;
         this.servos = SERVOS_INICIAIS;
+        this.soldados = SOLDADOS_INICIAIS;
+        this.construcoes = CONSTRUCOES_INICIAIS;
+        this.taxaImposto = TAXA_IMPOSTO_INICIAL;
+        this.nivelJustica = NIVEL_JUSTICA_INICIAL;
     }
 
     // Só será chamado a partir da Etapa 7
@@ -80,10 +92,55 @@ public class Cidade {
         return true;
     }
 
-    public int getFlorins() { return florins; }
-    public int getTerras()  { return terras; }
-    public int getGraos()   { return graos; }
-    public int getServos()  { return servos; }
+    // ---- Soldados ----
+    public void adicionarSoldados(int quantidade) {
+        soldados += quantidade;
+    }
+
+    public boolean removerSoldados(int quantidade) {
+        if (quantidade < 0 || quantidade > soldados) {
+            return false;
+        }
+        soldados -= quantidade;
+        return true;
+    }
+
+    // ---- Construções ----
+    public void adicionarConstrucoes(int quantidade) {
+        construcoes += quantidade;
+    }
+
+    public boolean removerConstrucoes(int quantidade) {
+        if (quantidade < 0 || quantidade > construcoes) {
+            return false;
+        }
+        construcoes -= quantidade;
+        return true;
+    }
+
+    // ---- Configurações de governo (getter/setter simples) ----
+    public int getTaxaImposto() {
+        return taxaImposto;
+    }
+
+    public void setTaxaImposto(int taxaImposto) {
+        this.taxaImposto = taxaImposto;
+    }
+
+    public String getNivelJustica() {
+        return nivelJustica;
+    }
+
+    public void setNivelJustica(String nivelJustica) {
+        this.nivelJustica = nivelJustica;
+    }
+
+    public int getFlorins()     { return florins; }
+    public int getTerras()      { return terras; }
+    public int getGraos()       { return graos; }
+    public int getServos()      { return servos; }
+    public int getSoldados()    { return soldados; }
+    public int getConstrucoes() { return construcoes; }
 
     public void exibirStatus() {
         System.out.println();
@@ -95,5 +152,9 @@ public class Cidade {
         System.out.println("Terras: " + terras + " hectares");
         System.out.println("Graos: " + graos + " unidades");
         System.out.println("Servos: " + servos);
+        System.out.println("Soldados: " + soldados);
+        System.out.println("Construcoes: " + construcoes);
+        System.out.println("Taxa de imposto: " + taxaImposto + "%");
+        System.out.println("Nivel de justica: " + nivelJustica);
     }
 }
