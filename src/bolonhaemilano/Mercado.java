@@ -1,7 +1,7 @@
 public class Mercado {
 
-    private static final int PRECO_GRAO = 4;          // compra: cidade paga
-    private static final int PRECO_VENDA_GRAO = 2;    // venda: cidade recebe
+    private static final int PRECO_GRAO = 2;          // compra: cidade paga
+    private static final int PRECO_VENDA_GRAO = 1;    // venda: cidade recebe
     private static final int PRECO_TERRA = 10;
     private static final int PRECO_VENDA_TERRA = 5;
 

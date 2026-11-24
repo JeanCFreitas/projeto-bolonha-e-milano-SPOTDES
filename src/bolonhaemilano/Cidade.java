@@ -20,6 +20,8 @@ public class Cidade {
     private int construcoes;
     private int taxaImposto;
     private String nivelJustica;
+    private boolean colheitaFeita;
+    private boolean impostosArrecadados;
 
     public Cidade(String nome, Jogador dono) {
         this.nome = nome;
@@ -33,12 +35,22 @@ public class Cidade {
         this.construcoes = CONSTRUCOES_INICIAIS;
         this.taxaImposto = TAXA_IMPOSTO_INICIAL;
         this.nivelJustica = NIVEL_JUSTICA_INICIAL;
+        this.colheitaFeita = false;
+        this.impostosArrecadados = false;
     }
 
-    // Só será chamado a partir da Etapa 7
+    // Soma 1 ao ano e libera colher/arrecadar de novo
     public void avancarAno() {
         anoAtual++;
+        colheitaFeita = false;
+        impostosArrecadados = false;
     }
+
+    // ---- Indicadores anuais ----
+    public void marcarColheitaFeita()        { colheitaFeita = true; }
+    public boolean isColheitaFeita()         { return colheitaFeita; }
+    public void marcarImpostosArrecadados()  { impostosArrecadados = true; }
+    public boolean isImpostosArrecadados()   { return impostosArrecadados; }
 
     // ---- Florins ----
     public void adicionarFlorins(int quantidade) {
@@ -135,6 +147,9 @@ public class Cidade {
         this.nivelJustica = nivelJustica;
     }
 
+    public String getNome()     { return nome; }
+    public Jogador getDono()    { return dono; }
+    public int getAnoAtual()    { return anoAtual; }
     public int getFlorins()     { return florins; }
     public int getTerras()      { return terras; }
     public int getGraos()       { return graos; }
@@ -156,5 +171,7 @@ public class Cidade {
         System.out.println("Construcoes: " + construcoes);
         System.out.println("Taxa de imposto: " + taxaImposto + "%");
         System.out.println("Nivel de justica: " + nivelJustica);
+        System.out.println("Colheita deste ano: " + (colheitaFeita ? "feita" : "pendente"));
+        System.out.println("Impostos deste ano: " + (impostosArrecadados ? "arrecadados" : "pendentes"));
     }
 }

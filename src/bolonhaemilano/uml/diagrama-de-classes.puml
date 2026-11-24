@@ -1,6 +1,7 @@
 @startuml
 skinparam classAttributeIconSize 0
-skinparam linetype ortho
+skinparam nodesep 40
+skinparam ranksep 60
 
 class Main {
   + {static} main(args : String[]) : void
@@ -9,19 +10,24 @@ class Main {
 class Menu {
   - scanner : Scanner
   - emExecucao : boolean
-  - jogador : Jogador
+  - partida : Partida
   - cidade : Cidade
   - mercado : Mercado
   - agricultura : Agricultura
   - governo : Governo
   - construcoes : Construcoes
+  - nobreza : Nobreza
   + Menu()
   + executar() : void
   - exibirOpcoes() : void
   - lerOpcao() : int
   - processarOpcao(opcao : int) : void
   - iniciarNovoJogo() : void
+  - encerrarTurno() : void
+  - mostrarClassificacao() : void
+  - anunciarVencedor() : void
   - exibirStatusCidade() : void
+  - exigirJogoEmAndamento() : boolean
   - abrirMercado() : void
   - lerQuantidade(unidade : String) : int
   - resultado(sucesso : boolean, msgOk : String, msgErro : String) : void
@@ -41,11 +47,15 @@ class Menu {
 }
 
 class Jogador {
+  - {static} TITULOS : String[]
   - nome : String
-  - titulo : String
+  - nivelTitulo : int
   + Jogador(nome : String)
   + getNome() : String
   + getTitulo() : String
+  + getNivelTitulo() : int
+  + promover() : boolean
+  + ehMonarca() : boolean
 }
 
 class Cidade {
@@ -59,9 +69,15 @@ class Cidade {
   - construcoes : int
   - taxaImposto : int
   - nivelJustica : String
+  - colheitaFeita : boolean
+  - impostosArrecadados : boolean
   - dono : Jogador
   + Cidade(nome : String, dono : Jogador)
   + avancarAno() : void
+  + marcarColheitaFeita() : void
+  + isColheitaFeita() : boolean
+  + marcarImpostosArrecadados() : void
+  + isImpostosArrecadados() : boolean
   + adicionarFlorins(qtd : int) : void
   + removerFlorins(qtd : int) : boolean
   + adicionarTerras(qtd : int) : void
@@ -74,6 +90,9 @@ class Cidade {
   + removerSoldados(qtd : int) : boolean
   + adicionarConstrucoes(qtd : int) : void
   + removerConstrucoes(qtd : int) : boolean
+  + getNome() : String
+  + getDono() : Jogador
+  + getAnoAtual() : int
   + getFlorins() : int
   + getTerras() : int
   + getGraos() : int
@@ -144,18 +163,65 @@ class Construcoes {
   + getPrecoConstrucao() : int
 }
 
+class Nobreza {
+  - {static} PRESTIGIO_MINIMO : int[]
+  + calcularPrestigio(cidade : Cidade) : int
+  + verificarPromocao(cidade : Cidade) : boolean
+}
+
+class Partida {
+  + {static} MAXIMO_JOGADORES : int
+  - {static} ANO_FINAL : int
+  - {static} NOMES_CIDADES : String[]
+  - cidades : List<Cidade>
+  - indiceAtual : int
+  + Partida()
+  + {static} nomeDaCidade(indice : int) : String
+  + adicionarCidade(cidade : Cidade) : boolean
+  + getCidadeAtual() : Cidade
+  + getAno() : int
+  + passarTurno() : boolean
+  + encerrarAno(nobreza : Nobreza) : List<Cidade>
+  + terminou() : boolean
+  + classificar(nobreza : Nobreza) : List<Cidade>
+  + determinarVencedor(nobreza : Nobreza) : Cidade
+}
+
+class Testes {
+  - {static} aprovados : int
+  - {static} reprovados : int
+  + {static} main(args : String[]) : void
+  - {static} verificar(descricao : String, condicao : boolean) : void
+  - {static} titulo(grupo : String) : void
+  - {static} novaCidade() : Cidade
+  - {static} testarCidade() : void
+  - {static} testarMercado() : void
+  - {static} testarAgricultura() : void
+  - {static} testarGoverno() : void
+  - {static} testarConstrucoes() : void
+  - {static} testarJogadorENobreza() : void
+  - {static} testarPartida() : void
+}
+
 Main ..> Menu : cria e executa
-Menu "1" o-- "0..1" Jogador : jogador
-Menu "1" o-- "0..1" Cidade : cidade
+Menu "1" o-- "0..1" Partida : partida
+Menu "1" o-- "0..1" Cidade : cidade da vez
 Menu "1" *-- "1" Mercado : mercado
 Menu "1" *-- "1" Agricultura : agricultura
 Menu "1" *-- "1" Governo : governo
 Menu "1" *-- "1" Construcoes : construcoes
+Menu "1" *-- "1" Nobreza : nobreza
+Partida "1" o-- "1..4" Cidade : cidades
 Cidade "1" --> "1" Jogador : dono
 Mercado ..> Cidade : opera sobre
 Agricultura ..> Cidade : opera sobre
 Governo ..> Cidade : opera sobre
 Construcoes ..> Cidade : opera sobre
+Nobreza ..> Cidade : calcula prestigio
+Nobreza ..> Jogador : promove
+Partida ..> Nobreza : usa
+
+Testes ..> Partida : testa as classes de regra
 
 note bottom of Mercado
   Nao guarda nenhuma Cidade:
@@ -184,11 +250,38 @@ note bottom of Construcoes
   Construcao: 20 florins.
 end note
 
+note bottom of Jogador
+  Quem sabe a ORDEM dos titulos.
+  TITULOS: Cavaleiro, Barao, Conde,
+  Marques, Duque, Rei.
+end note
+
+note bottom of Nobreza
+  Quem decide QUANDO promover.
+  prestigio = construcoes x 10 + soldados x 2
+  + servos + terras / 100 (florins nao entram).
+  No maximo 1 titulo por ano.
+end note
+
+note bottom of Partida
+  Rodadas anuais: passarTurno() devolve true
+  quando o ultimo jogador encerra (o ano fecha).
+  Termina se alguem e Rei ou o ano passa de 1410.
+  Vencedor: titulo mais alto; empate, maior prestigio.
+end note
+
 note bottom of Cidade
   Recursos (remover* devolve boolean): 1000 florins,
   10000 hectares, 500 graos, 200 servos,
   0 soldados, 0 construcoes.
-  Configuracoes: taxaImposto 10%, nivelJustica "Moderada"
-  (getter/setter simples).
+  Configuracoes: taxaImposto 10%, nivelJustica "Moderada".
+  Indicadores anuais: colheitaFeita, impostosArrecadados
+  (voltam a false em avancarAno()).
+end note
+
+note bottom of Testes
+  main proprio (java Testes).
+  Padrao: preparar, executar, verificar.
+  Termina com System.exit(1) se houver falha.
 end note
 @enduml

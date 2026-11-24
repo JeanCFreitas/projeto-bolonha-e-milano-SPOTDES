@@ -8,10 +8,13 @@ public class Agricultura {
     private static final int PERCENTUAL_MINIMO = 20;
     private static final int PERCENTUAL_MAXIMO = 80;
 
-    // A Agricultura não guarda nenhuma Cidade: ela chega por parâmetro.
-
-    // Devolve a producao de graos (0 se nao foi possivel plantar nada)
+    // Devolve a producao de graos; 0 se nao foi possivel plantar;
+    // -1 se a cidade ja colheu neste ano (nada e alterado)
     public int processarColheita(Cidade cidade) {
+        if (cidade.isColheitaFeita()) {
+            return -1;
+        }
+
         long limite = (long) cidade.getServos() * HECTARES_POR_SERVO;
         int hectares = (int) Math.min(cidade.getTerras(), limite);
         int sementes = hectares / HECTARES_POR_SEMENTE;
@@ -29,6 +32,7 @@ public class Agricultura {
         int producao = hectares * PRODUCAO_POR_HECTARE;
         cidade.removerGraos(sementes);
         cidade.adicionarGraos(producao);
+        cidade.marcarColheitaFeita();
         return producao;
     }
 

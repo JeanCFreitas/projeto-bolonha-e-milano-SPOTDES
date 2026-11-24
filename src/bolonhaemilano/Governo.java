@@ -11,18 +11,19 @@ public class Governo {
     private static final double MULTIPLICADOR_MODERADA = 1.0;
     private static final double MULTIPLICADOR_SEVERA = 1.3;
 
-    // O Governo não guarda nenhuma Cidade: ela chega por parâmetro.
-
-    // Devolve o total arrecadado, já creditado nos florins da cidade
+    // Devolve o total arrecadado; -1 se ja arrecadou neste ano (nada e alterado)
     public int arrecadarImpostos(Cidade cidade) {
+        if (cidade.isImpostosArrecadados()) {
+            return -1;
+        }
         int base = (int) ((long) cidade.getServos() * cidade.getTaxaImposto() / 100);
         double multiplicador = multiplicadorPara(cidade.getNivelJustica());
         int arrecadado = (int) (base * multiplicador);
         cidade.adicionarFlorins(arrecadado);
+        cidade.marcarImpostosArrecadados();
         return arrecadado;
     }
 
-    // Valida 0 a 50; se invalida, nao altera nada
     public boolean definirTaxaImposto(Cidade cidade, int taxa) {
         if (taxa < TAXA_MINIMA || taxa > TAXA_MAXIMA) {
             return false;
@@ -31,7 +32,6 @@ public class Governo {
         return true;
     }
 
-    // Valida Justa/Moderada/Severa; se invalido, nao altera nada
     public boolean definirJustica(Cidade cidade, String nivel) {
         if (!JUSTA.equals(nivel) && !MODERADA.equals(nivel) && !SEVERA.equals(nivel)) {
             return false;
