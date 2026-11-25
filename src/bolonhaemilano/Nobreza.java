@@ -6,11 +6,16 @@ public class Nobreza {
 
     // Florins não entram na conta
     public int calcularPrestigio(Cidade cidade) {
-        long prestigio = (long) cidade.getConstrucoes() * 10
-                + (long) cidade.getSoldados() * 2
-                + cidade.getServos()
-                + cidade.getTerras() / 100;
+        long prestigio = (long) cidade.getConstrucoes() * 10 + (long) cidade.getSoldados() * 2 + cidade.getServos() + cidade.getTerras() / 100;
         return (int) Math.min(prestigio, Integer.MAX_VALUE);
+    }
+
+        // Prestigio minimo para o proximo titulo; -1 se ja e monarca
+    public int prestigioParaProximoTitulo(Jogador dono) {
+        if (dono.monarca()) {
+            return -1;
+        }
+        return PRESTIGIO_MINIMO[dono.getNivelTitulo() + 1];
     }
 
     // No máximo 1 título por chamada

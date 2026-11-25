@@ -1,0 +1,102 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Main {
+  + {static} main(args : String[])
+}
+
+class Menu {
+  - partida : Partida
+  - cidade : Cidade
+  + executar()
+}
+
+class Partida {
+  + adicionarCidade(c : Cidade) : boolean
+  + passarTurno() : boolean
+  + encerrarAno(n : Nobreza) : List<Cidade>
+  + terminou() : boolean
+  + determinarVencedor(n : Nobreza) : Cidade
+}
+
+class Cidade {
+  - florins : int
+  - terras : int
+  - graos : int
+  - servos : int
+  - soldados : int
+  - construcoes : int
+  - taxaImposto : int
+  - nivelJustica : String
+  + adicionar*(qtd : int)
+  + remover*(qtd : int) : boolean
+  + avancarAno()
+}
+
+class Jogador {
+  - nome : String
+  - nivelTitulo : int
+  + promover() : boolean
+  + ehMonarca() : boolean
+}
+
+class Mercado {
+  + comprarGraos(c : Cidade, qtd : int) : boolean
+  + venderGraos(c : Cidade, qtd : int) : boolean
+  + comprarTerras(c : Cidade, qtd : int) : boolean
+  + venderTerras(c : Cidade, qtd : int) : boolean
+}
+
+class Agricultura {
+  + processarColheita(c : Cidade) : int
+  + distribuirAlimentos(c : Cidade, pct : int) : boolean
+}
+
+class Governo {
+  + arrecadarImpostos(c : Cidade) : int
+  + definirTaxaImposto(c : Cidade, taxa : int) : boolean
+  + definirJustica(c : Cidade, nivel : String) : boolean
+}
+
+class Construcoes {
+  + recrutarSoldados(c : Cidade, qtd : int) : boolean
+  + construir(c : Cidade, qtd : int) : boolean
+}
+
+class Nobreza {
+  + calcularPrestigio(c : Cidade) : int
+  + verificarPromocao(c : Cidade) : boolean
+}
+
+class Testes {
+  + {static} main(args : String[])
+}
+
+Main ..> Menu
+Menu o-- Partida
+Menu --> Mercado
+Menu --> Agricultura
+Menu --> Governo
+Menu --> Construcoes
+Menu --> Nobreza
+
+Partida "1" o-- "1..4" Cidade
+Cidade "1" --> "1" Jogador : dono
+
+Mercado ..> Cidade
+Agricultura ..> Cidade
+Governo ..> Cidade
+Construcoes ..> Cidade
+Nobreza ..> Cidade
+Nobreza ..> Jogador : promove
+
+note bottom of Testes
+  Testa todas as classes de regra
+  (java Testes).
+end note
+
+note bottom of Nobreza
+  Decide QUANDO promover.
+  O Jogador sabe a ORDEM dos titulos.
+end note
+@enduml

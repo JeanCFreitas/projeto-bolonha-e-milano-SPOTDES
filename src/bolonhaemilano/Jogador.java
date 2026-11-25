@@ -25,6 +25,14 @@ public class Jogador {
         return nivelTitulo;
     }
 
+        // Nome do proximo titulo; null se ja e monarca
+    public String getProximoTitulo() {
+        if (monarca()) {
+            return null;
+        }
+        return TITULOS[nivelTitulo + 1];
+    }
+
     // Se já é monarca devolve false; senão sobe, um nível
     public boolean promover() {
         if (monarca()) {

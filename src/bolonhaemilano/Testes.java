@@ -317,6 +317,17 @@ public class Testes {
         c.adicionarFlorins(100000);
         verificar("florins nao entram no prestigio", nobreza.calcularPrestigio(c) == 300);
 
+        // meta do proximo titulo
+        c = novaCidade();
+        verificar("meta do proximo titulo de um Cavaleiro e 400",
+                nobreza.prestigioParaProximoTitulo(c.getDono()) == 400);
+        verificar("Cavaleiro tem um proximo titulo", c.getDono().getProximoTitulo() != null);
+        for (int i = 0; i < 5; i++) {
+            c.getDono().promover();
+        }
+        verificar("monarca nao tem meta (-1)", nobreza.prestigioParaProximoTitulo(c.getDono()) == -1);
+        verificar("monarca nao tem proximo titulo", c.getDono().getProximoTitulo() == null);
+
         // promocao: 50 construcoes -> 800 de prestigio, mas so 1 titulo por chamada
         c = novaCidade();
         c.adicionarConstrucoes(50);

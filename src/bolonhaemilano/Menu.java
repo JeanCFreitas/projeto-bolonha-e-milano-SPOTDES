@@ -51,7 +51,8 @@ public class Menu {
         System.out.println("5 - Agricultura");
         System.out.println("6 - Governo");
         System.out.println("7 - Construcoes");
-        System.out.println("8 - Encerrar turno");
+        System.out.println("8 - Ver classificacao");
+        System.out.println("9 - Encerrar turno");
         System.out.println("0 - Sair");
         System.out.print("Escolha uma opcao: ");
     }
@@ -85,6 +86,9 @@ public class Menu {
                 abrirConstrucoes();
                 break;
             case 8:
+                verClassificacao();
+                break;
+            case 9:
                 encerrarTurno();
                 break;
             case 0:
@@ -139,6 +143,7 @@ public class Menu {
             if (promovidas.isEmpty()) {
                 System.out.println("Nenhuma promocao neste ano.");
             }
+            
             mostrarClassificacao();
 
             if (partida.terminou()) {
@@ -154,15 +159,40 @@ public class Menu {
                 + cidade.getDono().getNome() + " (" + cidade.getNome() + ").");
     }
 
+        // Opcao 8: so delega para mostrarClassificacao()
+    private void verClassificacao() {
+        if (!exigirJogoEmAndamento()) {
+            return;
+        }
+        mostrarClassificacao();
+    }
+
     private void mostrarClassificacao() {
-        System.out.println("\n--- CLASSIFICACAO ---");
+        System.out.println("\n--- CLASSIFICACAO (ano " + partida.getAno() + ") ---");
         int posicao = 1;
         for (Cidade c : partida.classificar(nobreza)) {
-            System.out.println(posicao + ". " + c.getDono().getTitulo() + " "
-                    + c.getDono().getNome() + " (" + c.getNome() + ") - prestigio "
-                    + nobreza.calcularPrestigio(c));
+            Jogador dono = c.getDono();
+            int prestigio = nobreza.calcularPrestigio(c);
+            System.out.println(posicao + ". " + dono.getTitulo() + " " + dono.getNome()
+                    + " (" + c.getNome() + ") - prestigio " + prestigio);
+            System.out.println("   " + descreverMeta(dono, prestigio));
             posicao++;
         }
+    }
+
+    // Texto da meta do proximo titulo
+    private String descreverMeta(Jogador dono, int prestigio) {
+        if (dono.monarca()) {
+            return "Meta: ja alcancou o maior titulo (" + dono.getTitulo() + ").";
+        }
+        int meta = nobreza.prestigioParaProximoTitulo(dono);
+        int faltam = meta - prestigio;
+        if (faltam <= 0) {
+            return "Meta: " + dono.getProximoTitulo() + " (" + meta
+                    + " de prestigio) - ja alcancada, a promocao sai no fim do ano.";
+        }
+        return "Meta: " + dono.getProximoTitulo() + " (" + meta
+                + " de prestigio) - faltam " + faltam + ".";
     }
 
     private void anunciarVencedor() {

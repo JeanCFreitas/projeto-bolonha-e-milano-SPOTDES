@@ -5,114 +5,58 @@ skinparam packageStyle rectangle
 actor Jogador
 actor Desenvolvedor
 
-rectangle "Bolonha e Milano" {
+rectangle "Jogo" {
   usecase "Iniciar novo jogo" as UC1
-  usecase "Informar quantidade de jogadores (1 a 4)" as UC1a
-  usecase "Informar nome de cada jogador" as UC1b
   usecase "Ver status da cidade" as UC2
   usecase "Ler sobre o jogo" as UC3
-  usecase "Acessar mercado" as UC5
-  usecase "Comprar graos" as UC5a
-  usecase "Vender graos" as UC5b
-  usecase "Comprar terras" as UC5c
-  usecase "Vender terras" as UC5d
-  usecase "Informar quantidade" as UC5e
-  usecase "Acessar agricultura" as UC6
-  usecase "Colher (1 vez por ano)" as UC6a
-  usecase "Distribuir alimentos" as UC6b
-  usecase "Informar percentual (20 a 80)" as UC6c
-  usecase "Acessar governo" as UC7
-  usecase "Arrecadar impostos (1 vez por ano)" as UC7a
-  usecase "Definir taxa de imposto" as UC7b
-  usecase "Informar taxa (0 a 50)" as UC7c
-  usecase "Definir nivel de justica" as UC7d
-  usecase "Escolher Justa, Moderada ou Severa" as UC7e
-  usecase "Acessar construcoes" as UC8
-  usecase "Recrutar soldados" as UC8a
-  usecase "Construir edificios" as UC8b
-  usecase "Informar quantidade de soldados/construcoes" as UC8c
+  usecase "Negociar no mercado" as UC4
+  usecase "Cuidar da agricultura" as UC5
+  usecase "Governar a cidade" as UC6
+  usecase "Recrutar e construir" as UC7
+  usecase "Ver classificacao" as UC8
   usecase "Encerrar turno" as UC9
-  usecase "Fechar o ano (ultimo jogador)" as UC9a
-  usecase "Promover governante" as UC9b
-  usecase "Mostrar classificacao" as UC9c
-  usecase "Anunciar vencedor" as UC9d
-  usecase "Sair" as UC4
-  usecase "Executar testes automatizados" as UC10
-  usecase "Verificar regras de cada classe" as UC10a
-  usecase "Informar aprovados e reprovados" as UC10b
+  usecase "Fechar o ano e promover" as UC9a
+  usecase "Anunciar vencedor" as UC9b
+  usecase "Sair" as UC0
 }
 
 Jogador --> UC1
 Jogador --> UC2
 Jogador --> UC3
+Jogador --> UC4
 Jogador --> UC5
 Jogador --> UC6
 Jogador --> UC7
 Jogador --> UC8
 Jogador --> UC9
-Jogador --> UC4
-
-Desenvolvedor --> UC10
-
-UC1 ..> UC1a : <<include>>
-UC1 ..> UC1b : <<include>>
-
-UC5a ..> UC5 : <<extend>>
-UC5b ..> UC5 : <<extend>>
-UC5c ..> UC5 : <<extend>>
-UC5d ..> UC5 : <<extend>>
-UC5a ..> UC5e : <<include>>
-UC5b ..> UC5e : <<include>>
-UC5c ..> UC5e : <<include>>
-UC5d ..> UC5e : <<include>>
-
-UC6a ..> UC6 : <<extend>>
-UC6b ..> UC6 : <<extend>>
-UC6b ..> UC6c : <<include>>
-
-UC7a ..> UC7 : <<extend>>
-UC7b ..> UC7 : <<extend>>
-UC7d ..> UC7 : <<extend>>
-UC7b ..> UC7c : <<include>>
-UC7d ..> UC7e : <<include>>
-
-UC8a ..> UC8 : <<extend>>
-UC8b ..> UC8 : <<extend>>
-UC8a ..> UC8c : <<include>>
-UC8b ..> UC8c : <<include>>
+Jogador --> UC0
 
 UC9a ..> UC9 : <<extend>>
-UC9a ..> UC9b : <<include>>
-UC9a ..> UC9c : <<include>>
-UC9d ..> UC9a : <<extend>>
+UC9b ..> UC9a : <<extend>>
 
-UC10 ..> UC10a : <<include>>
-UC10 ..> UC10b : <<include>>
-
-note right of UC2
-  Exige jogo em andamento.
-  Mostra a cidade da vez: recursos, taxa,
-  justica e indicadores anuais.
+note right of UC4
+  Compra e venda de graos e terras.
 end note
 note right of UC5
-  Exige jogo em andamento.
+  Colher (1 vez por ano)
+  e distribuir alimentos.
 end note
 note right of UC6
-  Exige jogo em andamento.
-end note
-note right of UC7
-  Exige jogo em andamento.
+  Arrecadar impostos (1 vez por ano),
+  definir taxa e nivel de justica.
 end note
 note right of UC8
-  Exige jogo em andamento.
-  Soldado exige florins E servos.
+  Prestigio de cada cidade
+  e meta do proximo titulo.
 end note
-note right of UC9
-  Passa a vez ao proximo jogador.
-  O ano so fecha quando o ultimo encerra.
+note bottom of UC2
+  Opcoes 2 a 9 exigem jogo em andamento
+  (exceto "Ler sobre o jogo").
 end note
-note right of UC9d
-  Quando alguem vira Rei
-  ou o ano passa de 1410.
-end note
+
+rectangle "Qualidade" {
+  usecase "Executar testes automatizados" as UC10
+}
+
+Desenvolvedor --> UC10
 @enduml
