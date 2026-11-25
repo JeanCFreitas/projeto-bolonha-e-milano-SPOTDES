@@ -110,7 +110,6 @@ deixa o valor negativo.
 ## Diagramas
 
 - `uml/classes.puml`: diagrama de classes
-- `uml/sequencia-encerrar-turno.puml`: diagrama de sequencia do fim de turno e do ano
 - `casos-de-uso/casos-de-uso.puml`: diagrama de casos de uso (Jogador e Desenvolvedor)
 
 Para visualizar, cole o conteudo em https://www.plantuml.com/plantuml ou use a
